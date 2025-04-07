@@ -1,69 +1,28 @@
 <!-- src/components/CustomNode.vue -->
 <template>
   <div class="custom-node">
-    <Handle type="target" :position="Position.Top" />
-
-    <button class="increment nodrag" @click="counter++">Increment</button>
-
-    <div v-if="counter > 0" class="counter">
-      <div class="count" v-for="n in counter" :key="`count-${n}`">
-        {{ n }}
-      </div>
-    </div>
-
-    <Handle type="source" :position="Position.Bottom" />
+    <!-- Точка подключения для входящих связей, расположенная слева -->
+    <Handle type="target" position="right" />
+    <div class="label">{{ data.label }}</div>
   </div>
 </template>
 
 <script setup>
-import { Handle, Position } from '@vue-flow/core'
-import { ref } from 'vue'
-
-const counter = ref(0)
+import { Handle } from '@vue-flow/core'
+defineProps({ data: Object })
 </script>
 
 <style scoped>
 .custom-node {
-  min-width: 100px;
-  gap: 4px;
-  padding: 8px;
+  padding: 12px;
   background: white;
-  border: 1px solid black;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.increment {
-  border-radius: 4px;
-  background: #42b983;
-  font-size: 12px;
-  color: #fff;
-  cursor: pointer;
-  border: none;
-  padding: 4px 8px;
-  margin-top: 4px;
-}
-
-.increment:hover {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-  0 4px 6px -4px rgb(0 0 0 / 0.1);
-}
-
-.counter {
-  margin-top: 8px;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 4px;
-}
-
-.count {
-  font-size: 10px;
-  color: #ff0072;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  padding: 2px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 140px;
   text-align: center;
+  font-size: 14px;
+  font-family: sans-serif;
+  /* Дополнительные стили для отладки */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

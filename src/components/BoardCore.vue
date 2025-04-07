@@ -2,10 +2,10 @@
   <VueFlow
       v-model:nodes="nodes"
       v-model:edges="edges"
-      fit-view-on-init
       :default-zoom="1.5"
       :min-zoom="0.2"
       :max-zoom="4"
+      @pane-ready="onPaneReady"
       class="vue-flow-basic-example"
   >
     <Background pattern-color="#aaa" :gap="8" />
@@ -23,35 +23,37 @@
 </template>
 
 <script setup>
-import { VueFlow, useVueFlow } from '@vue-flow/core'
+import { ref } from 'vue'
+import { VueFlow } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
 import { Controls } from '@vue-flow/controls'
+import { useLayout } from '../composables/useLayout'
 import CustomNode from './CustomNode.vue'
 import CustomEdge from './CustomEdge.vue'
 
-import { ref } from 'vue'
-
-const { onConnect, addEdges } = useVueFlow()
-
+// Ставим x=100, чтобы узел был левее центра, а y ~ центр экрана (минус 50 для учёта высоты ноды)
 const nodes = ref([
-  { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
-  { id: '2', type: 'output', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
-  { id: '3', type: 'custom', data: { label: 'Node 3' }, position: { x: 400, y: 100 } },
+  {
+    id: '1',
+    type: 'custom',
+    data: { label: 'Мой проект' },
+    position: { x: 30, y: window.innerHeight / 2 - 50 }
+  }
 ])
+const edges = ref([])
 
-const edges = ref([
-  { id: 'e1-2', source: '1', target: '2', type: 'custom' },
-  { id: 'e1-3', source: '1', target: '3', animated: true },
-])
+const { layout } = useLayout()
 
-onConnect((params) => {
-  addEdges([params])
-})
+function onPaneReady() {
+  // Если нужно перестраивать layout: layoutGraph('LR')
+  // Если нода одна — можно вообще не вызывать layout, чтобы она осталась на месте
+}
 </script>
 
 <style scoped>
 .vue-flow-basic-example {
   height: 100vh;
+  width: 100%;
 }
 </style>

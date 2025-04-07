@@ -1,3 +1,4 @@
+<!-- src/views/BoardView.vue -->
 <template>
   <BoardCore />
 </template>
