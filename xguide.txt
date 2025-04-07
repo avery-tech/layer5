@@ -1,0 +1,36 @@
+src/
+├── App.vue                    # Точка входа в интерфейс
+├── main.js                    # Инициализация Vue, Pinia, стили
+│
+├── assets/
+│   └── styles/
+│       └── global.scss        # Глобальные стили + импорт VueFlow + Tiptap
+│
+├── views/
+│   └── BoardView.vue          # Главная страница: доска + панель + заголовок
+│
+├── components/                # UI-компоненты
+│   ├── BoardCore.vue          # VueFlow: узлы, связи, масштабирование
+│   ├── CustomNode.vue         # Карточка-нода: текст, статус, редактирование (Tiptap)
+│   ├── CustomEdge.vue         # Отрисовка связи между нодами
+│   ├── LayoutControls.vue     # Кнопки "Горизонтально / Вертикально"
+│   ├── Sidebar.vue            # Фильтры, поиск, теги, статусы
+│   └── NodeToolbar.vue        # (Опц.) Кнопки над нодой: статус, удалить, цвет
+│
+├── store/                     # Состояние приложения
+│   └── nodesStore.js          # Pinia: все ноды, связи, операции (create, delete, update)
+│
+├── composables/               # Логика (разделено по зонам)
+│   ├── useLayout.js           # Автораскладка (dagre)
+│   └── useBoardLogic/
+│       ├── useNodeOperations.js   # Создание, удаление, редактирование узлов
+│       ├── useEdgeOperations.js   # Создание/удаление связей
+│       └── useInteractionMode.js  # (Опц.) Управление режимом: перетаскивание / редактирование
+│
+├── plugins/                   # (Опц.) кастомные расширения, фильтры
+│
+├── types/                     # (Опц.) структура Node, Edge, Enums
+│   └── node.model.js
+│
+└── utils/                     # (Опц.) утилиты: генерация id, таймеры и пр.
+    └── helpers.js
