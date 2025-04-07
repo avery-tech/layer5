@@ -1,3 +1,4 @@
+<!-- src/components/BoardCore.vue -->
 <template>
   <VueFlow
       v-model:nodes="nodes"
@@ -5,7 +6,6 @@
       :default-zoom="1.5"
       :min-zoom="0.2"
       :max-zoom="4"
-      @pane-ready="onPaneReady"
       class="vue-flow-basic-example"
   >
     <Background pattern-color="#aaa" :gap="8" />
@@ -13,7 +13,7 @@
     <Controls />
 
     <template #node-custom="nodeProps">
-      <CustomNode v-bind="nodeProps" />
+      <CustomNode v-bind="nodeProps" @create-child="handleCreateChild" />
     </template>
 
     <template #edge-custom="edgeProps">
@@ -23,37 +23,62 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { VueFlow } from '@vue-flow/core'
+import { ref, nextTick } from 'vue'
+import { VueFlow, useVueFlow } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
 import { Controls } from '@vue-flow/controls'
-import { useLayout } from '../composables/useLayout'
+
 import CustomNode from './CustomNode.vue'
 import CustomEdge from './CustomEdge.vue'
+import { useLayout } from '../composables/useLayout'
 
-// Ставим x=100, чтобы узел был левее центра, а y ~ центр экрана (минус 50 для учёта высоты ноды)
+// Начальная нода «Мой проект» — слева (x=50), примерно по вертикали (y=около центра)
 const nodes = ref([
   {
     id: '1',
     type: 'custom',
     data: { label: 'Мой проект' },
-    position: { x: 30, y: window.innerHeight / 2 - 50 }
+    position: { x: 50, y: window.innerHeight / 2 - 40 }
   }
 ])
 const edges = ref([])
 
 const { layout } = useLayout()
+const { fitView } = useVueFlow()
 
-function onPaneReady() {
-  // Если нужно перестраивать layout: layoutGraph('LR')
-  // Если нода одна — можно вообще не вызывать layout, чтобы она осталась на месте
+// При двойном клике на ноду создаём новую
+function handleCreateChild({ id: parentId }) {
+  const newId = String(Date.now())
+  // Добавляем новую ноду
+  nodes.value.push({
+    id: newId,
+    type: 'custom',
+    data: { label: 'Новая задача' },
+    position: { x: 0, y: 0 }
+  })
+  // Добавляем ребро
+  edges.value.push({
+    id: `e${parentId}-${newId}`,
+    source: parentId,
+    target: newId,
+    type: 'custom'
+  })
+
+  // Перестраиваем всё дерево
+  const updatedNodes = layout(nodes.value, edges.value, 'LR')
+  nodes.value = updatedNodes
+
+  // Масштабируем и показываем всё дерево
+  nextTick(() => {
+    fitView()
+  })
 }
 </script>
 
 <style scoped>
 .vue-flow-basic-example {
-  height: 100vh;
   width: 100%;
+  height: 100vh;
 }
 </style>

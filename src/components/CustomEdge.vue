@@ -1,9 +1,7 @@
 <!-- src/components/CustomEdge.vue -->
 <template>
-  <!-- Основная кривая -->
   <BaseEdge :path="path[0]" :style="style" :marker-end="markerEnd" />
 
-  <!-- Кнопка на ребре -->
   <EdgeLabelRenderer>
     <div
         class="edge-button-wrapper nodrag nopan"
@@ -36,7 +34,6 @@ const props = defineProps({
 })
 
 const path = computed(() => getBezierPath(props))
-
 const { removeEdges } = useVueFlow()
 </script>
 

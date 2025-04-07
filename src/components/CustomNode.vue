@@ -1,15 +1,32 @@
 <!-- src/components/CustomNode.vue -->
 <template>
-  <div class="custom-node">
-    <!-- Точка подключения для входящих связей, расположенная слева -->
-    <Handle type="target" position="right" />
+  <div class="custom-node" @dblclick="handleDblClick">
+    <!-- Точка подключения слева (вход) -->
+    <Handle type="target" :position="Position.Left" />
+    <!-- Точка подключения справа (выход) -->
+    <Handle type="source" :position="Position.Right" />
+
     <div class="label">{{ data.label }}</div>
   </div>
 </template>
 
 <script setup>
-import { Handle } from '@vue-flow/core'
-defineProps({ data: Object })
+import { Handle, Position } from '@vue-flow/core'
+
+const props = defineProps({
+  id: String,
+  data: {
+    type: Object,
+    default: () => ({})
+  }
+})
+
+const emit = defineEmits(['create-child'])
+
+function handleDblClick() {
+  // При двойном клике эмитим событие, чтобы родитель создал дочернюю ноду
+  emit('create-child', { id: props.id })
+}
 </script>
 
 <style scoped>
@@ -22,7 +39,6 @@ defineProps({ data: Object })
   text-align: center;
   font-size: 14px;
   font-family: sans-serif;
-  /* Дополнительные стили для отладки */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>
