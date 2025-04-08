@@ -113,4 +113,12 @@ function toggleDragging(state) {
   width: 100%;
   height: 100vh;
 }
+/*
+:deep(.vue-flow__node.selected) {
+  transform: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  transition: none !important;
+} */
 </style>

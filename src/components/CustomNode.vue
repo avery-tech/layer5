@@ -81,47 +81,63 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+
+:deep(.vue-flow__node.selected) {
+  transform: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+  border: 1px solid #ccc !important;
+  outline: none !important;
+  scale: 1 !important;
+}
+
 .custom-node {
-  padding: 12px;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  min-width: 140px;
-  text-align: center;
-  font-size: 14px;
-  font-family: sans-serif;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Убираем дополнительное выделение */
-  outline: none;
+  padding: 10px;                /* Отступ вокруг содержимого ноды */
+  background: white;            /* Белый фон ноды */
+  border: 1px solid #ccc;       /* Рамка ноды: 1px, сплошная, светло-серая (#ccc) */
+  border-radius: 6px;           /* Скругление углов на 6px */
+  /* width: 180px; */           /* Фиксированная ширина отключена, чтобы ширина зависела от содержимого */
+  height: 15px;                 /* Фиксированная высота ноды — 25px */
+  text-align: center;           /* Текст выравнивается по центру */
+  font-size: 14px;              /* Размер шрифта 14px */
+  font-family: sans-serif;      /* Базовый шрифт sans-serif */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легкая тень вокруг ноды */
+  /* overflow: hidden;              Скрываем всё, что выходит за пределы ноды */
+  transform: none !important;   /* Отключаем любые трансформации */
+  transition: none !important;  /* Отключаем анимации и переходы */
 }
 
 .label {
-  font-size: 14px;
-  font-family: sans-serif;
-  margin: 0;
-  cursor: text;
+  font-size: 12px;              /* Размер шрифта 14px */
+  /* font-family: sans-serif;   Шрифт sans-serif */
+  margin: 0;                    /* Нет внешних отступов */
+  cursor: text;                 /* Курсор в виде текстового, указывающий, что элемент редактируемый */
+  line-height: 15px;            /* Высота строки 20px для вертикального центрирования текста внутри ноды */
 }
 
-/* Стили для Tiptap редактора внутри ноды */
+/* Стили для редактора внутри ноды */
 .editor-content {
-  outline: none;
-  font-size: 14px;
-  font-family: sans-serif;
-  text-align: center;
-  padding: 0;
-  margin: 0;
-  cursor: text;
+  outline: none;                /* Убираем обводку */
+  font-size: 12px;              /* Размер шрифта 14px */
+  /* font-family: sans-serif;       Шрифт sans-serif */
+  text-align: center;           /* Текст выравнивается по центру */
+  padding: 0;                   /* Отступы внутри отсутствуют */
+  margin: 0;                    /* Нет внешних отступов */
+  cursor: text;                 /* Курсор в виде текстового */
+  width: 100%;                  /* Редактор занимает 100% ширины контейнера */
+  height: 100%;                 /* Редактор занимает 100% высоты контейнера */
+  box-sizing: border-box;       /* Габариты включают padding и border */
+  overflow: hidden;             /* Обрезаем лишнее содержимое */
 }
-:deep(.ProseMirror:focus) {
-  outline: none !important;
-  box-shadow: none !important;
-}
+
+
+
 :deep(.ProseMirror) {
-  outline: none !important;
-  box-shadow: none !important;
-  border: none !important;
-  background: transparent !important;
-  padding: 0;
-  margin: 0;
+  outline: none !important;      /* Убираем обводку */
+  box-shadow: none !important;    /* Убираем тень */
+  border: none !important;        /* Убираем рамку */
+  background: transparent !important; /* Делаем фон прозрачным */
+  padding: 0 !important;          /* Убираем внутренние отступы */
+  margin: 0 !important;           /* Убираем внешние отступы */
 }
 </style>
