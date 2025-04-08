@@ -1,21 +1,24 @@
-<!-- src/components/BoardCore.vue -->
 <template>
   <VueFlow
       v-model:nodes="nodes"
       v-model:edges="edges"
-      :default-zoom="1.5"
-      :min-zoom="0.2"
-      :max-zoom="4"
+      :default-zoom="0"
+      :min-zoom="0"
+      :max-zoom="0.8"
+      :zoomOnScroll="false"
+      :zoomable="false"
       class="vue-flow-basic-example"
   >
     <Background pattern-color="#aaa" :gap="8" />
     <MiniMap />
     <Controls />
 
+    <!-- Кастомный узел. При двойном клике эмитирует create-child -->
     <template #node-custom="nodeProps">
       <CustomNode v-bind="nodeProps" @create-child="handleCreateChild" />
     </template>
 
+    <!-- Кастомное ребро. Без кнопки удаления -->
     <template #edge-custom="edgeProps">
       <CustomEdge v-bind="edgeProps" />
     </template>
@@ -28,36 +31,45 @@ import { VueFlow, useVueFlow } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
 import { Controls } from '@vue-flow/controls'
-
 import CustomNode from './CustomNode.vue'
 import CustomEdge from './CustomEdge.vue'
 import { useLayout } from '../composables/useLayout'
 
-// Начальная нода «Мой проект» — слева (x=50), примерно по вертикали (y=около центра)
+const { setCenter } = useVueFlow() // метод управления камерой
+
+// Начальная нода "Мой проект" — ставим слева
 const nodes = ref([
   {
     id: '1',
     type: 'custom',
     data: { label: 'Мой проект' },
+    // Примерно по центру экрана по высоте, x=50
     position: { x: 50, y: window.innerHeight / 2 - 40 }
   }
 ])
 const edges = ref([])
 
+// Подключаем функцию layout из useLayout (dagre)
 const { layout } = useLayout()
-const { fitView } = useVueFlow()
 
-// При двойном клике на ноду создаём новую
+/**
+ * Функция создания дочерней ноды, вызывается при двойном клике
+ * на родительской ноде (CustomNode.vue -> emit('create-child'))
+ */
 function handleCreateChild({ id: parentId }) {
   const newId = String(Date.now())
-  // Добавляем новую ноду
+  const parentNode = nodes.value.find(n => n.id === parentId)
+  if (!parentNode) return
+
+  // 1. Создаем новую ноду (она пока имеет условные координаты)
   nodes.value.push({
     id: newId,
     type: 'custom',
     data: { label: 'Новая задача' },
-    position: { x: 0, y: 0 }
+    position: { x: parentNode.position.x + 150, y: parentNode.position.y + 80 }
   })
-  // Добавляем ребро
+
+  // 2. Добавляем ребро
   edges.value.push({
     id: `e${parentId}-${newId}`,
     source: parentId,
@@ -65,13 +77,19 @@ function handleCreateChild({ id: parentId }) {
     type: 'custom'
   })
 
-  // Перестраиваем всё дерево
+  // 3. Запускаем dagre-раскладку: все узлы переупорядочиваются, включая родителя
   const updatedNodes = layout(nodes.value, edges.value, 'LR')
   nodes.value = updatedNodes
 
-  // Масштабируем и показываем всё дерево
+  // 4. Когда Vue обновит DOM, ищем позицию ДЕЙСТВИТЕЛЬНОЙ новой ноды после dagre
   nextTick(() => {
-    fitView()
+    const newNode = nodes.value.find(n => n.id === newId)
+    if (!newNode) return
+
+    // 5. Переводим фокус камеры на новую ноду, НЕ изменяя зум
+    // (по умолчанию setCenter(..., ..., zoom) — если третий аргумент не передать,
+    // VueFlow берёт текущий зум)
+    setCenter(newNode.position.x, newNode.position.y)
   })
 }
 </script>
