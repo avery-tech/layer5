@@ -112,4 +112,16 @@ onBeforeUnmount(() => {
   margin: 0;
   cursor: text;
 }
+:deep(.ProseMirror:focus) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+:deep(.ProseMirror) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 0;
+  margin: 0;
+}
 </style>
