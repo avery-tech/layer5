@@ -7,6 +7,9 @@
       :max-zoom="0.8"
       :zoomOnScroll="false"
       :zoomable="false"
+      :nodes-draggable="isDraggingEnabled"
+      :pan-on-drag="isDraggingEnabled"
+      :pan-on-scroll="isDraggingEnabled"
       class="vue-flow-basic-example"
   >
     <Background pattern-color="#aaa" :gap="8" />
@@ -15,7 +18,12 @@
 
     <!-- Кастомный узел. При двойном клике эмитирует create-child -->
     <template #node-custom="nodeProps">
-      <CustomNode v-bind="nodeProps" @create-child="handleCreateChild" />
+      <CustomNode
+        v-bind="nodeProps"
+        @create-child="handleCreateChild"
+        @update-label="handleUpdateLabel"
+        @lock-drag="toggleDragging"
+      />
     </template>
 
     <!-- Кастомное ребро. Без кнопки удаления -->
@@ -36,6 +44,7 @@ import CustomEdge from './CustomEdge.vue'
 import { useLayout } from '../composables/useLayout'
 
 const { setCenter } = useVueFlow() // метод управления камерой
+const isDraggingEnabled = ref(true)
 
 // Начальная нода "Мой проект" — ставим слева
 const nodes = ref([
@@ -92,6 +101,11 @@ function handleCreateChild({ id: parentId }) {
     setCenter(newNode.position.x, newNode.position.y)
   })
 }
+
+function toggleDragging(state) {
+  isDraggingEnabled.value = !state
+}
+
 </script>
 
 <style scoped>
