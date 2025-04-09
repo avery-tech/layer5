@@ -108,7 +108,13 @@ watch(() => props.data.autoEdit, (newVal) => {
       })
     })
   }
-})
+},{
+  immediate: true,
+    }
+
+
+
+)
 
 onBeforeUnmount(() => {
   editor.destroy()
