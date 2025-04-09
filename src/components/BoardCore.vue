@@ -74,7 +74,7 @@ function handleCreateChild({ id: parentId }) {
   nodes.value.push({
     id: newId,
     type: 'custom',
-    data: { label: 'Новая задача' },
+    data: { label: 'Новая задача', autoEdit: true },
     position: { x: parentNode.position.x + 150, y: parentNode.position.y + 80 }
   })
 
